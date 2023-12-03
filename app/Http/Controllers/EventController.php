@@ -29,6 +29,13 @@ class EventController extends Controller
         return response()->json(['data' => $event]);
     }
 
+    public function calendarDestroy($id)
+    {
+        $event = Event::find($id);
+        $event->delete();
+        return response()->json(['success' => 'odstraněno']);
+    }
+
     public function tableIndex(Request $request)
     {
         if ($request->ajax()) {

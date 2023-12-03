@@ -127,11 +127,12 @@
                 </div>
               </div>
               <input id="action" type="hidden">
-              <input id="event_id" name="event_od" type="hidden">
+              <input id="event_id" type="hidden">
               <input id="user_id" name="user_id" type="hidden">
             </div>
             <div class="modal-footer" class="modal-footer" class="modal-footer" class="modal-footer">
               <button class="btn btn-muted me-auto" data-bs-dismiss="modal" type="button">Zavřít</button>
+              <button class="btn btn-danger" id="delete_button">Odstranit</button>
               <button class="btn btn-success" id="submit-button" type="submit"></button>
             </div>
           </form>
@@ -180,7 +181,7 @@
           timeZone: 'Europe/Prague',
           locale: 'cs',
           firstDay: 1,
-          height: 758,
+          height: 759,
           eventClick: function(info) {
             var id = info.event.id
             $.ajax({
@@ -206,8 +207,8 @@
                 $('#text-color').val(html.data.text_color)
                 $('#start').val(html.data.start)
                 $('#end').val(html.data.end)
-                $('#event-id').val(html.data.id)
-                $('#user-id').val(html.data.user_id)
+                $('#event_id').val(html.data.id)
+                $('#user_id').val(html.data.user_id)
                 $("#createModal").modal("show")
               }
             })
@@ -243,6 +244,26 @@
         });
         calendar.render()
       })
+
+      $('#delete_button').on('click', function(event) {
+        event.preventDefault(event)
+        id = $('#event_id').val()
+        $.ajax({
+          url: "/event/destroy/" + id,
+          method: "DELETE",
+          beforeSend: function() {
+            $('#delete_button').text("{{ __('Deleting ...') }}")
+          },
+          success: function(data) {
+            setTimeout(function() {
+              $('#delete_button').text("{{ __('Delete') }}")
+              $('#createModal').modal('hide')
+              $('#calendar').fullCalendar('refetchEvents');
+              toastr.success(data.success)
+            }, 2000)
+          }
+        })
+      });
     </script>
     <script>
       var myTable = new DataTable('#datatable', {

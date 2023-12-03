@@ -20,4 +20,5 @@ Route::get('/', function () {
 
 Route::get('events', [EventController::class, 'calendarIndex'])->name('events.index');
 Route::post('event/{id}', [EventController::class, 'calendarShow'])->name('event.show');
+Route::delete('event/destroy/{id}', [EventController::class, 'calendarDestroy'])->name('event.destroy');
 Route::get('table', [EventController::class, 'tableIndex'])->name('table.index');
