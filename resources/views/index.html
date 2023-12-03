@@ -1,0 +1,288 @@
+<!DOCTYPE html>
+<html lang='en'>
+
+<head>
+  <meta charset='utf-8' />
+  <link href="https://cdn.datatables.net/1.13.8/css/dataTables.bootstrap5.min.css" rel="stylesheet">
+  <link href="css/tabler.css" rel="stylesheet">
+</head>
+
+<body>
+  <div class="page-wrapper">
+    <div class="container-fluid">
+      <div class="row row-card mt-3">
+        <div class="col-12">
+          <div class="row row-card g-2">
+            <div class="col-12 col-md-4">
+              <div class="card shadow-sm">
+                <div class="card-stamp">
+                  <div class="card-stamp-icon text-whote bg-red">
+                    <svg class="icon icon-tabler icon-tabler-calendar-month me-1"
+                      xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
+                      stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round"
+                      stroke-linejoin="round">
+                      <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+                      <path d="M4 7a2 2 0 0 1 2 -2h12a2 2 0 0 1 2 2v12a2 2 0 0 1 -2 2h-12a2 2 0 0 1 -2 -2v-12z" />
+                      <path d="M16 3v4" />
+                      <path d="M8 3v4" />
+                      <path d="M4 11h16" />
+                      <path d="M7 14h.013" />
+                      <path d="M10.01 14h.005" />
+                      <path d="M13.01 14h.005" />
+                      <path d="M16.015 14h.005" />
+                      <path d="M13.015 17h.005" />
+                      <path d="M7.01 17h.005" />
+                      <path d="M10.01 17h.005" />
+                    </svg>
+                  </div>
+                </div>
+                <div class="card-body p-2">
+                  <div id="calendar"></div>
+                </div>
+              </div>
+            </div>
+            <div class="col-12 col-md-8">
+              <div class="card shadow-sm">
+                <div class="card-header bg-blue-lt pe-3">
+                  <svg class="icon icon-tabler icon-tabler-list text-blue me-1" xmlns="http://www.w3.org/2000/svg"
+                    width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"
+                    fill="none" stroke-linecap="round" stroke-linejoin="round">
+                    <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+                    <path d="M9 6l11 0" />
+                    <path d="M9 12l11 0" />
+                    <path d="M9 18l11 0" />
+                    <path d="M5 6l0 .01" />
+                    <path d="M5 12l0 .01" />
+                    <path d="M5 18l0 .01" />
+                  </svg>
+                  <div class="card-title">Seznam</div>
+                  <div class="card-actions">
+                    <div class="input-icon">
+                      <input class="form-control" id="mySearchField" type="text" placeholder="Hledej ...">
+                      <span class="input-icon-addon">
+                        <svg class="icon" xmlns="http://www.w3.org/2000/svg" width="24" height="24"
+                          viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none"
+                          stroke-linecap="round" stroke-linejoin="round">
+                          <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+                          <path d="M10 10m-7 0a7 7 0 1 0 14 0a7 7 0 1 0 -14 0"></path>
+                          <path d="M21 21l-6 -6"></path>
+                        </svg>
+                      </span>
+                    </div>
+                  </div>
+                </div>
+                <div class="card-body p-2 pt-0">
+                  <table class="table table-hover" id="datatable">
+                    <thead>
+                      <tr>
+                        <th>Column 1</th>
+                        <th>Column 2</th>
+                        <th>Column 2</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr>
+                        <td>Č</td>
+                        <td>Row 1 Data 2</td>
+                        <td>Row 1 Data 2</td>
+                      </tr>
+                      <tr>
+                        <td>C</td>
+                        <td>Z</td>
+                        <td>Row 2 Data 2</td>
+                      </tr>
+                      <tr>
+                        <td>S</td>
+                        <td>Ž</td>
+                        <td>Row 2 Data 2</td>
+                      </tr>
+                      <tr>
+                        <td>Š</td>
+                        <td>Row 2 Data 2</td>
+                        <td>Š</td>
+                      </tr>
+                      <tr>
+                        <td>Row 2 Data 1</td>
+                        <td>Row 2 Data 2</td>
+                        <td>S</td>
+                      </tr>
+                      <tr>
+                        <td>Row 2 Data 1</td>
+                        <td>Row 2 Data 2</td>
+                        <td>C</td>
+                      </tr>
+                      <tr>
+                        <td>Row 2 Data 1</td>
+                        <td>Row 2 Data 2</td>
+                        <td>Č</td>
+                      </tr>
+                      <tr>
+                        <td>Row 2 Data 1</td>
+                        <td>Row 2 Data 2</td>
+                        <td>Row 2 Data 2</td>
+                      </tr>
+                      <tr>
+                        <td>Row 2 Data 1</td>
+                        <td>Row 2 Data 2</td>
+                        <td>Row 2 Data 2</td>
+                      </tr>
+                      <tr>
+                        <td>Row 2 Data 1</td>
+                        <td>Row 2 Data 2</td>
+                        <td>Row 2 Data 2</td>
+                      </tr>
+                      <tr>
+                        <td>Row 2 Data 1</td>
+                        <td>Row 2 Data 2</td>
+                        <td>Row 2 Data 2</td>
+                      </tr>
+                      <tr>
+                        <td>Row 2 Data 1</td>
+                        <td>Row 2 Data 2</td>
+                        <td>Row 2 Data 2</td>
+                      </tr>
+                      <tr>
+                        <td>Row 2 Data 1</td>
+                        <td>Row 2 Data 2</td>
+                        <td>Row 2 Data 2</td>
+                      </tr>
+                      <tr>
+                        <td>Row 2 Data 1</td>
+                        <td>Row 2 Data 2</td>
+                        <td>Row 2 Data 2</td>
+                      </tr>
+                      <tr>
+                        <td>Row 2 Data 1</td>
+                        <td>Row 2 Data 2</td>
+                        <td>Row 2 Data 2</td>
+                      </tr>
+                      <tr>
+                        <td>Row 2 Data 1</td>
+                        <td>Row 2 Data 2</td>
+                        <td>Row 2 Data 2</td>
+                      </tr>
+                      <tr>
+                        <td>Row 2 Data 1</td>
+                        <td>Row 2 Data 2</td>
+                        <td>Row 2 Data 2</td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+  <script src='https://cdn.jsdelivr.net/npm/fullcalendar/index.global.min.js'></script>
+  <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  <script src="https://cdn.datatables.net/1.13.8/js/jquery.dataTables.min.js"></script>
+  <script src="https://cdn.datatables.net/1.13.8/js/dataTables.bootstrap5.min.js"></script>
+  <script src="http://cdn.datatables.net/plug-ins/1.13.7/sorting/czech-string.js"></script>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      const calendarEl = document.getElementById('calendar');
+      const calendar = new FullCalendar.Calendar(calendarEl, {
+        events: [{
+            daysOfWeek: [0, 6],
+            display: "background",
+            backgroundColor: "#1111aa22",
+            overLap: true,
+            allDay: true
+          },
+          {
+            id: '1',
+            title: 'my event 1',
+            start: '2023-12-10',
+            color: '#452585',
+            overLap: false,
+            allDay: true
+          },
+          {
+            id: '2',
+            title: 'my event 2',
+            start: '2023-12-15'
+          },
+          {
+            id: '3',
+            title: 'my event 3',
+            start: '2023-12-24',
+            editable: false
+          }
+        ],
+        initialDate: '2023-12-01',
+        initialView: 'dayGridMonth',
+        weekNumbers: true,
+        weekText: 'T',
+        headerToolbar: {
+          right: 'title',
+          center: '',
+          left: 'prev,today,next'
+        },
+        buttonText: {
+          today: 'Dnes',
+          month: 'Měsíc',
+          week: 'Týden',
+          day: 'Den',
+          list: 'Seznam'
+        },
+        selectable: true,
+        editable: true,
+        eventResizableFromStart: true,
+        timeZone: 'Europe/Prague',
+        locale: 'cs',
+        firstDay: 1,
+        height: 673,
+        eventClick: function(info) {
+          console.log('Event: ' + info.event.title)
+        },
+        dateClick: function(info) {
+          console.log('Clicked on: ' + info.dateStr);
+        },
+        select: function(info) {
+          console.log('Selected: ' + info.startStr + ' - ' + info.endStr)
+        },
+        eventOverlap: function(stillEvent, movingEvent) {
+          return stillEvent.allDay && movingEvent.allDay;
+        }
+      });
+      calendar.render()
+    })
+  </script>
+  <script>
+    var myTable = new DataTable('#datatable', {
+      dom: 'lrt',
+      paging: false,
+      stateSave: true,
+      pageSave: true,
+      pageLength: -1,
+      lengthChange: false,
+      responsive: true,
+      fixedHeader: true,
+      scrollY: 585,
+      deferRender: true,
+      searchHighlight: true,
+      scroller: false,
+      order: [
+        [1, "asc"]
+      ],
+      language: {
+        url: 'https://cdn.datatables.net/plug-ins/1.13.7/i18n/cs.json'
+      },
+      columnDefs: [{
+        type: 'czech',
+        targets: [0, 1, 2]
+      }]
+    })
+
+    $('#mySearchField').keyup(function() {
+      myTable.search($(this).val()).draw();
+    })
+  </script>
+</body>
+
+</html>
