@@ -258,7 +258,6 @@
             setTimeout(function() {
               $('#delete_button').text("{{ __('Delete') }}")
               $('#createModal').modal('hide')
-              $('#calendar').fullCalendar('refetchEvents');
               toastr.success(data.success)
             }, 2000)
           }

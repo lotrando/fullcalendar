@@ -17,11 +17,11 @@ return new class extends Migration
             $table->id();
             $table->string('title');
             $table->bigInteger('user_id');
-            $table->string('color');
-            $table->string('background_color');
-            $table->string('border_color');
-            $table->string('text_color');
-            $table->boolean('allday');
+            $table->string('color')->nullable();
+            $table->string('background_color')->nullable();
+            $table->string('border_color')->nullable();
+            $table->string('text_color')->nullable();
+            $table->boolean('allday')->nullable();
             $table->date('start');
             $table->date('end');
         });
