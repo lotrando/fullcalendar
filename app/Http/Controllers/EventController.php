@@ -3,43 +3,113 @@
 namespace App\Http\Controllers;
 
 
+use App\Models\Department;
 use App\Models\Event;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Schema;
+use Illuminate\Support\Facades\Validator;
 use Yajra\DataTables\Facades\DataTables;
 
 class EventController extends Controller
 {
     public function calendarIndex(Request $request)
     {
-        $events = Event::with('user')
+        $items = Event::with('user', 'department')
             ->whereDate('start', '>=', $request->start)
             ->whereDate('end',   '<=', $request->end)
             ->get();
-        return $events;
+
+        foreach ($items as $item) {
+            $events[] = [
+                'id'            => $item->id,
+                'color'         => $item->department->color,
+                'textColor'     => '#ffffff',
+                'title'         => $item->department->department_name,
+                'department_id' => $item->department->id,
+                'user_id'       => $item->user_id,
+                'start'         => $item->start,
+                'end'           => $item->end,
+            ];
+        }
+        return response()->json($events);
     }
 
     public function calendarShow($id)
     {
-        $event = Event::with('user')->findOrFail($id);
+        $event = Event::with('user', 'department')->findOrFail($id);
         // if ($event->user_id != auth()->user->id) {
-        if ($event->user_id != 1) {
+        if ($event->user_id == 5) {
             return response()->json(['warning' => 'Toto není váše rezervace!']);
         }
         return response()->json(['data' => $event]);
+    }
+
+    public function calendarStore(Request $request)
+    {
+        $error = Validator::make($request->all(), [
+            'title'         => 'required',
+            'user_id'       => 'required',
+            'department_id' => 'required',
+            'start'         => 'required|date|after_or_equal:today',
+            'end'           => 'required|date'
+        ]);
+
+        if ($error->fails()) {
+            return response()->json(['errors' => $error->errors()->all()]);
+        }
+
+        $form_data = [
+            'title'         => $request->title,
+            'user_id'       => $request->user_id,
+            'department_id' => $request->department_id,
+            'start'         => $request->start,
+            'end'           => $request->end,
+        ];
+
+        Event::create($form_data);
+        return response()->json(['success' => 'Rezervace úspěšně uložena!']);
+    }
+
+    public function calendarUpdate(Request $request)
+    {
+        $error = Validator::make($request->all(), [
+            'title'         => 'required',
+            'department_id' => 'required',
+            'user_id'       => 'required',
+            'start'         => 'required|date|after_or_equal:today',
+            'end'           => 'required|date'
+        ]);
+
+        if ($error->fails()) {
+            return response()->json(['errors' => $error->errors()->all()]);
+        }
+
+        $form_data = [
+            'title'         => $request->title,
+            'user_id'       => $request->user_id,
+            'department_id' => $request->department_id,
+            'start'         => $request->start,
+            'end'           => $request->end,
+        ];
+
+        Event::find($request->id)->update($form_data);
+        return response()->json(['success' => 'Rezervace úspěšně upravena!']);
     }
 
     public function calendarDestroy($id)
     {
         $event = Event::find($id);
         $event->delete();
-        return response()->json(['success' => 'odstraněno']);
+        return response()->json(['success' => 'Odstraněno']);
     }
 
     public function tableIndex(Request $request)
     {
+        $departments = Department::all();
+
         if ($request->ajax()) {
-            $model = Event::with('user')->select('*', 'events.id');
+            $model = Event::with('user', 'department')->select('*', 'events.id');
             return DataTables::eloquent($model)->addColumn('action', function ($data) {
                 $buttons = '
                     <center>

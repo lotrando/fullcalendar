@@ -5,16 +5,12 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="csrf-token" content="{{ csrf_token() }}" />
-    <title>Calendar</title>
+    <title>jQuery CALTAB</title>
+    <link href='https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5.13.1/css/all.css' rel='stylesheet'>
     <link href="https://cdn.datatables.net/1.13.8/css/dataTables.bootstrap5.min.css" rel="stylesheet">
-    <link href="css/tabler.css" rel="stylesheet">
+    <link href="{{ asset('js/fullcalendar/fullcalendar.css') }}" rel="stylesheet">
+    <link href="{{ asset('css/tabler.css') }}" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.css" rel="stylesheet">
-    <style>
-      /* #calendar td.fc-day-sun,
-      #calendar td.fc-day-sat {
-        background-color: #e3e7eb;
-      } */
-    </style>
   </head>
 
   <body>
@@ -49,10 +45,9 @@
                       <thead>
                         <tr>
                           <th>#</th>
-                          <th>title</th>
-                          <th>user</th>
-                          <th>from</th>
-                          <th>to</th>
+                          <th>Oddělení</th>
+                          <th>Od</th>
+                          <th>Do</th>
                           <th>
                             <span>
                               <svg class="icon" width="24" height="24" viewBox="0 0 24 24" stroke-width="2"
@@ -94,8 +89,14 @@
                   <input class="form-control" id="title" name="title" type="text">
                 </div>
                 <div class="col-6">
-                  <label class="form-label">{{ __('User name') }}</label>
-                  <input class="form-control" id="user-name" name="user-name" type="text">
+                  <label class="form-label">{{ __('Department') }}</label>
+                  <select class="form-select" id="department_id" name="department_id">
+                    <option value=" " selected>Vyberte oddělení</option>
+                    @foreach ($departments as $department)
+                      <option value="{{ $department->id }}" @if (old('department_id') == $department->id) selected @endif>
+                        {{ $department->department_code }} - {{ $department->department_name }}
+                      </option> @endforeach
+                  </select>
                 </div>
               </div>
               <div class="row mb-2">
@@ -108,31 +109,13 @@
                   <input class="form-control" id="end" name="end" type="date">
                 </div>
               </div>
-              <div class="row mb-2">
-                <div class="col-3">
-                  <label class="form-label">{{ __('Color') }}</label>
-                  <input class="form-control" id="color" name="color" type="text">
-                </div>
-                <div class="col-3">
-                  <label class="form-label">{{ __('Background Color') }}</label>
-                  <input class="form-control" id="background-color" name="backgroundColor" type="text">
-                </div>
-                <div class="col-3">
-                  <label class="form-label">{{ __('Border Color') }}</label>
-                  <input class="form-control" id="border-color" name="borderColor" type="text">
-                </div>
-                <div class="col-3">
-                  <label class="form-label">{{ __('Text Color') }}</label>
-                  <input class="form-control" id="text-color" name="textColor" type="text">
-                </div>
-              </div>
               <input id="action" type="hidden">
-              <input id="event_id" type="hidden">
+              <input id="event_id" name="event_id" type="hidden">
               <input id="user_id" name="user_id" type="hidden">
             </div>
             <div class="modal-footer" class="modal-footer" class="modal-footer" class="modal-footer">
               <button class="btn btn-muted me-auto" data-bs-dismiss="modal" type="button">Zavřít</button>
-              <button class="btn btn-danger" id="delete_button">Odstranit</button>
+              <button class="btn btn-danger" id="delete-button">Odstranit</button>
               <button class="btn btn-success" id="submit-button" type="submit"></button>
             </div>
           </form>
@@ -141,125 +124,188 @@
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
-    <script src='https://cdn.jsdelivr.net/npm/fullcalendar/index.global.min.js'></script>
+    <script src=" {{ asset('js/jquery.min.js') }}"></script>
     <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
     <script src="https://cdn.datatables.net/1.13.8/js/jquery.dataTables.min.js"></script>
     <script src="https://cdn.datatables.net/1.13.8/js/dataTables.bootstrap5.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
     <script src="http://cdn.datatables.net/plug-ins/1.13.7/sorting/czech-string.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.4/moment.min.js"></script>
+    <script src="{{ asset('js/moment.min.js') }}"></script>
+    <script src="{{ asset('js/fullcalendar/fullcalendar.min.js') }}"></script>
+    <script src="{{ asset('js/fullcalendar/locale/cs.js') }}"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
 
     <script>
       $.ajaxSetup({
         headers: {
           'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
         }
-      })
-      document.addEventListener('DOMContentLoaded', function() {
-        const calendarEl = document.getElementById('calendar');
-        const calendar = new FullCalendar.Calendar(calendarEl, {
-          events: "{{ route('events.index') }}",
-          initialDate: '2023-12-01',
-          initialView: 'dayGridMonth',
-          weekNumbers: true,
-          weekText: 'T',
-          headerToolbar: {
-            left: 'prev',
-            center: 'title',
-            right: 'next',
-          },
-          buttonText: {
-            today: 'Dnes',
-            month: 'Měsíc',
-            week: 'Týden',
-            day: 'Den',
-            list: 'Seznam'
-          },
-          selectable: true,
-          editable: true,
-          eventResizableFromStart: true,
-          timeZone: 'Europe/Prague',
-          locale: 'cs',
-          firstDay: 1,
-          height: 759,
-          eventClick: function(info) {
-            var id = info.event.id
-            $.ajax({
-              type: "POST",
-              url: "event/" + id,
-              data: {
-                id: id
-              },
-              dataType: "json",
-              success: function(html) {
-                if (html.warning) {
-                  toastr.warning(html.warning);
-                  return
-                }
-                $('.modal-title').html('Upravit')
-                $('.modal-header').removeClass('bg-lime-lt').addClass('bg-yellow-lt')
-                $('#submit-button').html('Upravit')
-                $('#title').val(html.data.title)
-                $('#user-name').val(html.data.user.name)
-                $('#color').val(html.data.color)
-                $('#background-color').val(html.data.background_color)
-                $('#border-color').val(html.data.border_color)
-                $('#text-color').val(html.data.text_color)
-                $('#start').val(html.data.start)
-                $('#end').val(html.data.end)
-                $('#event_id').val(html.data.id)
-                $('#user_id').val(html.data.user_id)
-                $("#createModal").modal("show")
-              }
-            })
-          },
-          // dateClick: function(info) {
-          //   $('.modal-title #submit-button').html('Vložit')
-          //   $('.modal-header').removeClass('bg-yellow-lt').addClass('bg-lime-lt')
-          //   $('#submit-button').html('Upravit')
-          //   $('#title').val('')
-          //   $('#start').val(info.endStr)
-          //   $('#end').val(info.endStr)
-          //   $('#user-id').val(1)
-          //   $("#createModal").modal("show")
-          // },
-          select: function(info) {
-            if (moment().format('Y-M-DD') <= info.startStr) {
-              $('.modal-title, #submit-button').html('Vložit')
-              $('.modal-header').removeClass('bg-yellow-lt').addClass('bg-lime-lt')
-              $('#title').val('')
-              $('#start').val(info.startStr)
-              $('#end').val(info.endStr)
-              $("#createModal").modal("show")
-            } else {
-              toastr.error("Rezervace nelze vytářet v minulosti");
-            }
-          },
-          selectOverlap: function(event) {
-            if (event.item_id === $('#item_id option:selected').val()) {
-              return false;
-            }
-            return true;
-          }
-        });
-        calendar.render()
-      })
+      });
 
-      $('#delete_button').on('click', function(event) {
+      var calendar = $('#calendar').fullCalendar({
+        header: {
+          left: 'title',
+          center: '',
+          right: 'today prev,next'
+        },
+        allDay: true,
+        eventOvelap: true,
+        weekNumbers: true,
+        height: 760,
+        editable: true,
+        events: "{{ route('events.index') }}",
+        selectable: true,
+        select: function(start, end, allDay) {
+          if (moment().format('Y-M-DD') === start.format('Y-M-DD') || start.isAfter(moment())) {
+            $('input, select').attr('readonly', false).prop('disabled', false)
+            $('.modal-title').html('Nová rezervace malování')
+            $('.modal-header').removeClass('bg-red-lt').addClass('bg-lime-lt')
+            $('#createInputForm')[0].reset()
+            $('#start').val(start.format())
+            $('#end').val(end.format())
+            $('#user_id').val(1)
+            $('#delete-button').hide()
+            $('#submit-button').show().html('Rezervovat')
+            $("#createModal").modal("show")
+            $('#action').val('Add')
+          } else {
+            toastr.error("Rezervace nelze vytářet v minulosti");
+          }
+        },
+        eventClick: function(event) {
+          $.ajax({
+            type: "GET",
+            url: "event/" + event.id,
+            dataType: "json",
+            success: function(html) {
+              if (html.warning) {
+                toastr.warning(html.warning)
+                return
+              }
+              $('.modal-title').html('Odstranit rezervaci č.' + event.id)
+              $('.modal-header').removeClass('bg-lime-lt').addClass('bg-red-lt')
+              $('#title').val(html.data.title)
+              $('#user_name').val(html.data.user.name)
+              $('#start').val(html.data.start)
+              $('#end').val(html.data.end)
+              $('#event_id').val(event.id)
+              $('#department_id').val(html.data.department_id)
+              $('#item_id').val(html.data.item_id)
+              $('#user_id').val(html.data.user_id)
+              $('#delete-button').show()
+              $('#submit-button').hide()
+              $("#createModal").modal("show")
+              $('#action').val('Delete')
+            }
+          });
+        },
+        eventDrop: function(event, delta, revertFunc) {
+          var start = moment(event.start).format('Y-MM-DD')
+          var end = moment(event.end).format('Y-MM-DD')
+          $.ajax({
+            url: "event/update/" + event.id,
+            type: "POST",
+            data: {
+              title: event.title,
+              user_id: event.user_id,
+              department_id: event.department_id,
+              start: start,
+              end: end,
+            },
+            success: function(response) {
+              if (response.errors) {
+                calendar.fullCalendar('refetchEvents')
+                toastr.error('Rezervace nelze přesouvat do minulosti')
+              } else {
+                calendar.fullCalendar('refetchEvents')
+                myTable.draw()
+                toastr.success("Rezervace úspěšně upravena")
+              }
+            },
+          });
+        },
+        selectOverlap: function(event) {
+          if (event.item_id === $('#item_id option:selected').val()) {
+            return false;
+          }
+          return true;
+        },
+        eventOverlap: function(stillEvent, movingEvent) {
+          return stillEvent.department_id !== movingEvent.department_id;
+        },
+        eventDataTransform: function(event) {
+          if (event.user_id == 1) {
+            event.editable = true;
+          }
+          return event;
+        },
+        eventRender: function(event, element) {
+          element.html(event.id + ' - ' + event.title);
+          // if (event.status) {
+          //   element.popover({
+          //     title: event.title + ' : ' + event.user_name,
+          //     content: 'Stav: ' + event.status,
+          //     trigger: 'hover',
+          //     placement: 'top',
+          //   });
+          // }
+        }
+      });
+
+      $('#createInputForm').on('submit', function(event) {
+        event.preventDefault(event)
+        if ($('#action').val() === 'Add') {
+          $.ajax({
+            url: "{{ route('event.store') }}",
+            method: "POST",
+            beforeSend: function() {
+              $('#submit-button').addClass('btn-loading')
+            },
+            data: new FormData(this),
+            contentType: false,
+            cache: false,
+            processData: false,
+            dataType: "json",
+            success: function(data) {
+              if (data.used) {
+                toastr.error("Předmět rezervace je již v tomto termínu rezervován !");
+              }
+              if (data.errors) {
+                $('#submit-button').removeClass('btn-loading')
+                for (var count = 0; count < data.errors.length; count++) {
+                  toastr.error(data.errors[count])
+                }
+              }
+              if (data.success) {
+                setTimeout(function() {
+                  $('#createModal').modal('hide')
+                  $('#submit-button').removeClass('btn-loading')
+                  toastr.success("Rezervace úspěšně uložena")
+                }, 1000);
+                calendar.fullCalendar('refetchEvents')
+                myTable.draw()
+              }
+            }
+          })
+        }
+      });
+
+      $('#delete-button').on('click', function(event) {
         event.preventDefault(event)
         id = $('#event_id').val()
         $.ajax({
-          url: "/event/destroy/" + id,
+          url: "event/destroy/" + id,
           method: "DELETE",
           beforeSend: function() {
-            $('#delete_button').text("{{ __('Deleting ...') }}")
+            $('#delete-button').addClass('btn-loading')
           },
           success: function(data) {
             setTimeout(function() {
-              $('#delete_button').text("{{ __('Delete') }}")
+              $('#delete-button').removeClass('btn-loading')
               $('#createModal').modal('hide')
               toastr.success(data.success)
             }, 2000)
+            calendar.fullCalendar('refetchEvents')
+            myTable.draw()
           }
         })
       });
@@ -303,11 +349,7 @@
             width: 'auto'
           },
           {
-            data: 'title',
-            width: 'auto'
-          },
-          {
-            data: 'user.name',
+            data: 'department.department_name',
             width: 'auto'
           },
           {

@@ -2,6 +2,8 @@
 
 namespace Database\Factories;
 
+use App\Models\Department;
+use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
@@ -17,10 +19,11 @@ class EventFactory extends Factory
     public function definition()
     {
         return [
-            'title' => $this->faker->name(),
-            'user_id' => 1,
-            'start' => $this->faker->dateTimeBetween('2023-12-01', '2023-12-31'),
-            'end'   => $this->faker->dateTimeBetween('2023-12-01', '2023-12-31')
+            'title'         => $this->faker->name(),
+            'user_id'       => User::all()->random()->id,
+            'department_id' => Department::all()->random()->id,
+            'start'         => $this->faker->dateTimeBetween('2023-10-15', '2023-12-15'),
+            'end'           => $this->faker->dateTimeBetween('2023-10-15', '2023-12-15')
         ];
     }
 }

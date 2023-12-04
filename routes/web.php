@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\EventController;
+use App\Models\Department;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -15,10 +16,14 @@ use Illuminate\Support\Facades\Route;
 */
 
 Route::get('/', function () {
-    return view('welcome');
+    $departments = Department::all();
+    return view('welcome', ['departments' => $departments]);
 });
 
 Route::get('events', [EventController::class, 'calendarIndex'])->name('events.index');
-Route::post('event/{id}', [EventController::class, 'calendarShow'])->name('event.show');
+Route::post('event', [EventController::class, 'calendarStore'])->name('event.store');
+Route::get('event/{id}', [EventController::class, 'calendarShow'])->name('event.show');
+Route::post('event/update/{id}', [EventController::class, 'calendarUpdate'])->name('event.update');
 Route::delete('event/destroy/{id}', [EventController::class, 'calendarDestroy'])->name('event.destroy');
+
 Route::get('table', [EventController::class, 'tableIndex'])->name('table.index');
